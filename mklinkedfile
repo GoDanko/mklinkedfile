@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+read -rp "Provide the file name to be created at $HOME: " filename
+
+if [[ -f "$filename" ]]; then
+    read -rp "File already exists. Would you like to link in the home directory? Y/n : " answer
+    if [[ "$answer" != "y" && "$answer" != "Y" ]]; then
+        exit 0;
+    fi
+elif [[ -d "$filename" ]]; then
+    echo "Chosen file name corresponds to a directory: linking not supported"
+    exit 1
+else 
+    touch "$filename"
+    echo "File was created"
+fi
+
+if ln "$filename" "$HOME/$filename.hl" ; then
+    echo "$filename's hard link created"
+    exit 0
+else
+    echo "failed to create hard link for $filename"
+    exit 1
+fi
